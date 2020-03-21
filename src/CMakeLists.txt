@@ -15,6 +15,7 @@ set(HEADERS
   serializable_state.hh
   serializable_state_impl.hh
   state.hh
+  state_impl.hh
   )
 
 set(SRC
