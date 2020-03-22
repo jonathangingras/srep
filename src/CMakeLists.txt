@@ -28,7 +28,7 @@ add_library(srep
   ${SRC}
   )
 
-target_link_libraries(srep PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(srep PRIVATE nlohmann_json::nlohmann_json Boost::system OpenSSL::SSL)
 
 install(FILES ${ROOT_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/srep)

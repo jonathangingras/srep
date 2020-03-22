@@ -25,3 +25,19 @@ add_test_executable(barrier_test barrier_test.cc)
 add_test_executable(state_test state_test.cc)
 add_test_executable(map_state_test map_state_test.cc)
 add_test_executable(serializable_state_test serializable_state_test.cc)
+
+add_executable(network_server_test network_server_test.cc)
+add_dependencies(network_server_test googletest)
+target_link_libraries(network_server_test ${googletest_LIBRARIES} srep)
+add_test(network_server_test "sh"
+  ${CMAKE_CURRENT_SOURCE_DIR}/network_server_test.sh
+  ${CMAKE_CURRENT_BINARY_DIR}/network_server_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/ssl/server.crt)
+
+add_executable(network_client_test network_client_test.cc)
+add_dependencies(network_client_test googletest)
+target_link_libraries(network_client_test ${googletest_LIBRARIES} srep)
+add_test(network_client_test "sh"
+  ${CMAKE_CURRENT_SOURCE_DIR}/network_client_test.sh
+  ${CMAKE_CURRENT_BINARY_DIR}/network_server_test
+  ${CMAKE_CURRENT_BINARY_DIR}/network_client_test)
