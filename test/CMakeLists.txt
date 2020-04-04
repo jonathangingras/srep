@@ -25,6 +25,8 @@ add_test_executable(barrier_test barrier_test.cc)
 add_test_executable(state_test state_test.cc)
 add_test_executable(map_state_test map_state_test.cc)
 add_test_executable(serializable_state_test serializable_state_test.cc)
+add_test_executable(thread_pool_test thread_pool_test.cc)
+add_test_executable(http_test http_test.cc)
 
 add_executable(network_server_test network_server_test.cc)
 add_dependencies(network_server_test googletest)

@@ -7,21 +7,31 @@ set(HEADERS
   barrier_impl.hh
   channel.hh
   channel_impl.hh
+  http.hh
+  http_impl.hh
   insertion_queue.hh
   insertion_queue_impl.hh
   io_exchange.hh
   io_exchange_impl.hh
   map_state.hh
+  receiver.hh
+  receiver_impl.hh
   serializable_state.hh
   serializable_state_impl.hh
   state.hh
   state_impl.hh
+  thread_pool.hh
+  thread_pool_impl.hh
+  transmitter.hh
   )
 
 set(SRC
   ${HEADERS}
   barrier.cc
+  http.cc
   map_state.cc
+  receiver.cc
+  thread_pool.cc
   )
 
 add_library(srep
