@@ -18,15 +18,7 @@ class https_transmitter {
 public:
   https_transmitter(const std::string &remote_host,
                     const unsigned short &port,
-                    const std::string &certificate_chain_file = ""):
-    remote_host_(remote_host),
-    port_(port),
-    ssl_context_(boost::asio::ssl::context::sslv23) {
-    ssl_context_.set_default_verify_paths();
-    if (!certificate_chain_file.empty()) {
-      ssl_context_.load_verify_file(certificate_chain_file);
-    }
-  }
+                    const std::string &certificate_chain_file = "");
 
   void transmit(std::function<void(std::ostream &input)> function);
 };
