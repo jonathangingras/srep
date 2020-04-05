@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include "../src/receiver.hh"
 
-TEST(NetworkTransmitter, CanServeSSL) {
+TEST(HttpsReceiver, CanServeSSL) {
   std::filesystem::path ssl_dir = std::filesystem::path(__FILE__).parent_path() / "ssl";
   srep::https_receiver receiver(ssl_dir / "server.crt",
                                 ssl_dir / "server.key",

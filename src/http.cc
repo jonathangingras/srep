@@ -52,6 +52,18 @@ void srep::http::header_base::parse_fields(std::istream &input) {
   }
 }
 
+size_t srep::http::header_base::fields_size() const {
+  size_t result = 0;
+  for (const auto &pair: fields) {
+    result += pair.first.size();
+    result++;
+    result += pair.second.size();
+    result++;
+    result++;
+  }
+  return result;
+}
+
 void srep::http::header_base::write_fields(std::ostream &output) const {
   if (!access("Content-Length:").exist()) {
     output << "Content-Length: 0" << http::endl();
@@ -75,11 +87,15 @@ void srep::http::client_header::parse_in(std::istream &input) {
     input >> protocol;
 
     if(protocol != "HTTP/1.1") {
-      //TODO: deal with bad format
+      // TODO: deal with bad format
     }
 
     parse_fields(input);
   }
+}
+
+size_t srep::http::client_header::size() const {
+  return method().size() + 1 + route().size() + 1 + 8 + 2 + fields_size() + 2;
 }
 
 void srep::http::client_header::write_specific(std::ostream &output) const {
@@ -108,8 +124,12 @@ void srep::http::server_header::parse_in(std::istream &input) {
 
     parse_fields(input);
   } else {
-    //TODO: deal bad format
+    // TODO: deal bad format
   }
+}
+
+size_t srep::http::server_header::size() const {
+  return 8 + 1 + 3 + 1 + status_message().size() + 2 + fields_size() + 2;
 }
 
 void srep::http::server_header::write_specific(std::ostream &output) const {

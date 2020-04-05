@@ -29,7 +29,8 @@ add_test_executable(thread_pool_test thread_pool_test.cc)
 add_test_executable(http_test http_test.cc)
 
 add_executable(network_server_test network_server_test.cc)
-add_dependencies(network_server_test googletest)
+add_executable(generate_random_bin generate_random_bin.cc)
+add_dependencies(network_server_test googletest generate_random_bin)
 target_link_libraries(network_server_test ${googletest_LIBRARIES} srep)
 add_test(network_server_test "sh"
   ${CMAKE_CURRENT_SOURCE_DIR}/network_server_test.sh
@@ -43,3 +44,11 @@ add_test(network_client_test "sh"
   ${CMAKE_CURRENT_SOURCE_DIR}/network_client_test.sh
   ${CMAKE_CURRENT_BINARY_DIR}/network_server_test
   ${CMAKE_CURRENT_BINARY_DIR}/network_client_test)
+
+add_executable(network_client_long_test network_client_long_test.cc)
+add_dependencies(network_client_long_test googletest)
+target_link_libraries(network_client_long_test ${googletest_LIBRARIES} srep)
+add_test(network_client_long_test "sh"
+  ${CMAKE_CURRENT_SOURCE_DIR}/network_client_test.sh
+  ${CMAKE_CURRENT_BINARY_DIR}/network_server_test
+  ${CMAKE_CURRENT_BINARY_DIR}/network_client_long_test)

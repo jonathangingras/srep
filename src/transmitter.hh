@@ -1,22 +1,34 @@
 #ifndef _SREP_TRANSMITTER_HH_
 #define _SREP_TRANSMITTER_HH_
 
+#include <ostream>
 #include <string>
+#include <functional>
+#include <boost/asio.hpp>
+#include <boost/asio/ssl/stream.hpp>
+#include <boost/asio/ssl/rfc2818_verification.hpp>
 
 namespace srep {
 
 class https_transmitter {
+  std::string remote_host_;
+  unsigned short port_;
+  boost::asio::ssl::context ssl_context_;
+
 public:
   https_transmitter(const std::string &remote_host,
                     const unsigned short &port,
-                    const std::string &certificate_chain_file = "") {
-    
+                    const std::string &certificate_chain_file = ""):
+    remote_host_(remote_host),
+    port_(port),
+    ssl_context_(boost::asio::ssl::context::sslv23) {
+    ssl_context_.set_default_verify_paths();
+    if (!certificate_chain_file.empty()) {
+      ssl_context_.load_verify_file(certificate_chain_file);
+    }
   }
 
-  void suspend();
-
-  template <typename function_type>
-  void run(function_type &&function);
+  void transmit(std::function<void(std::ostream &input)> function);
 };
 
 }

@@ -11,6 +11,8 @@
 
 namespace srep {
 
+// TODO: deal with all !error non-happy paths
+
 template <typename function_type>
 void https_receiver::forward_body_and_close_connection(
   function_type &&function,
@@ -43,10 +45,9 @@ https_receiver::get_read_callback(
           input_stream >> client_header;
         }
 
-        if (read_size >= client_header.content_length()) {
-          forward_body_and_close_connection(function, received_data, client, pool);
-        } else if (client_header.expect_continue()) {
+        if (client_header.expect_continue()) {
           // TODO: set a limit (byte size) as parameter, so the server can return 417 Negotiation Failed
+
           std::string response = http::server_header(100, "Continue");
           size_t expected_length = client_header.content_length();
           boost::asio::async_write(*client,
@@ -66,6 +67,20 @@ https_receiver::get_read_callback(
                                          });
                                      }
                                    });
+        } else if (read_size >= client_header.size() + client_header.content_length()) {
+          forward_body_and_close_connection(function, received_data, client, pool);
+        } else if (client_header.content_length() < 2048) {
+          // TODO: adjust limit of 2048
+
+          boost::asio::async_read(*client,
+                                  *received_data,
+                                  boost::asio::transfer_at_least(client_header.content_length()),
+                                  [&function, received_data, client, &pool]
+                                  (const boost::system::error_code &error, std::size_t) {
+                                    if (!error) {
+                                      forward_body_and_close_connection(function, received_data, client, pool);
+                                    }
+                                  });
         } else {
           std::string response = http::server_header(413, "Payload Too Large");
           boost::asio::async_write(*client, boost::asio::buffer(response, response.size()), noop);

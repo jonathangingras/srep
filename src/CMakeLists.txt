@@ -32,6 +32,7 @@ set(SRC
   map_state.cc
   receiver.cc
   thread_pool.cc
+  transmitter.cc
   )
 
 add_library(srep

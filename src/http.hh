@@ -37,6 +37,7 @@ protected:
 
   void write_fields(std::ostream &output) const;
   void parse_fields(std::istream &input);
+  size_t fields_size() const;
 
   struct optional_field {
     const header_base &header;
@@ -57,11 +58,14 @@ protected:
 
   std::string get_or_default_str(const std::string &key, const std::string &default_value="") const;
 
+  virtual size_t size() const = 0;
   virtual void parse_in(std::istream &input) = 0;
   virtual void write_specific(std::ostream &output) const = 0;
 
 public:
   operator std::string () const;
+
+  inline void emplace(std::string &&key, std::string &&value) { fields.emplace(std::forward<std::string>(key), std::forward<std::string>(value)); }
 
   inline std::size_t content_length() const { return get_or_default<std::size_t, 0>("Content-Length:"); }
   inline std::string content_type() const { return get_or_default_str("Content-Type:"); }
@@ -89,8 +93,13 @@ public:
 
   bool expect_continue() const;
 
+  // TODO: test this method
+  size_t size() const;
+
   inline const std::string &method() const { return method_; }
   inline const std::string &route() const { return route_; }
+
+  // TODO: remove the following 3 methods, those shortcuts are out of scope for this class
   inline std::string host() const { return get_or_default_str("Host:"); }
   inline std::string user_agent() const { return get_or_default_str("User-Agent:", default_user_agent()); }
   inline std::string accept() const { return get_or_default_str("Accept:", default_accept()); }
@@ -112,6 +121,9 @@ public:
     status_code_(status_code),
     status_message_(status_message)
     {}
+
+  // TODO: test this method
+  size_t size() const;
 
   inline const unsigned short &status_code() const { return status_code_; }
   inline const std::string &status_message() const { return status_message_; }
