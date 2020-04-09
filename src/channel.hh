@@ -7,17 +7,17 @@
 
 namespace srep {
 
-template <typename value_type_>
-class channel {
+template <typename queue_type>
+class basic_channel {
 public:
-  typedef value_type_ value_type;
+  typedef typename queue_type::value_type value_type;
   typedef value_type *pointer;
   typedef value_type &reference;
   typedef const value_type &const_reference;
   typedef value_type &&rvalue_reference;
 
 private:
-  insertion_queue<value_type> queue;
+  queue_type queue;
   std::mutex mutex;
   std::condition_variable condition_variable;
 
@@ -36,5 +36,13 @@ public:
 }
 
 #include "channel_impl.hh"
+#include <queue>
+
+namespace srep {
+
+template <typename value_type>
+using channel = basic_channel<std::queue<value_type> >;
+
+};
 
 #endif

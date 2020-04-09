@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <random>
 #include <thread>
+#include <vector>
+#include <set>
 #include "../src/channel.hh"
 #include "../src/io_exchange.hh"
 #include "test_object.hh"
@@ -14,10 +16,16 @@ TEST(Channel, SendIsConsistent) {
   channel.write(3);
   channel.write(1);
 
-  int expected[] = {0, 1, 1, 2, 3};
+  std::multiset<int> expected {0, 1, 1, 2, 3};
+  std::vector<int> popped;
 
+  EXPECT_EQ(std::size_t(5), channel.size());
   for (size_t i = 0; i < 5; ++i) {
-    EXPECT_EQ(expected[i], channel.read().inside);
+    popped.push_back(channel.read().inside);
+  }
+
+  for (const auto &i: popped) {
+    EXPECT_TRUE(expected.find(i) != expected.end());
   }
 }
 
