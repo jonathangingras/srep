@@ -24,6 +24,29 @@ public:
   void push(function_type &&function, Args &&...args);
 };
 
+template <typename function_type,
+          typename call_return_type,
+          typename exception_type,
+          typename handler_type>
+class exception_catcher {
+  function_type function_;
+  handler_type handler_;
+
+public:
+  inline exception_catcher(function_type &&function,
+                           handler_type &&handler):
+    function_(std::forward<function_type>(function)),
+    handler_(std::forward<handler_type>(handler))
+    {}
+
+  template <typename ...Args>
+  call_return_type operator () (Args &&...args);
+};
+
+template <typename exception_type, typename call_return_type, typename function_type, typename handler_type>
+exception_catcher<function_type, call_return_type, exception_type, handler_type>
+catch_exceptions(function_type &&function, handler_type &&handler);
+
 }
 
 #include "thread_pool_impl.hh"
