@@ -6,6 +6,8 @@
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include "thread_pool.hh"
+#include "channel.hh"
+#include "barrier.hh"
 
 namespace srep {
 
@@ -14,28 +16,23 @@ class https_receiver {
   boost::asio::ssl::context context_;
   boost::asio::ip::tcp::acceptor acceptor_;
   std::string passphrase_;
-  thread_pool pool;
+  channel<std::shared_ptr<boost::asio::streambuf> > buffer_channel;
 
   static constexpr void noop(const boost::system::error_code&, std::size_t) {}
 
-  template <typename function_type>
   static void forward_body_and_close_connection(
-    function_type &&function,
     std::shared_ptr<boost::asio::streambuf> received_data,
     std::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> client,
-    thread_pool &pool);
+    channel<std::shared_ptr<boost::asio::streambuf>> &buffer_channel);
 
-  template <typename function_type>
   static std::function<void(const boost::system::error_code &, std::size_t)>
   get_read_callback(
-    function_type &&function,
     std::shared_ptr<boost::asio::streambuf> received_data,
     std::shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> client,
-    thread_pool &pool);
+    channel<std::shared_ptr<boost::asio::streambuf>> &buffer_channel);
 
-  template <typename function_type>
   std::function<void(const boost::system::error_code &, boost::asio::ip::tcp::socket)>
-  get_accept_callback(function_type &&function);
+  get_accept_callback();
 
 public:
   https_receiver(const std::string &certificate_chain_file,

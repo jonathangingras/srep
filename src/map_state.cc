@@ -8,7 +8,7 @@ void addition_map_state_update::apply(nlohmann::json &state) {
   state.emplace(key, std::move(data));
 }
 
-std::ostream &addition_map_state_update::serialize_to(std::ostream &output) {
+std::ostream &addition_map_state_update::serialize_to(std::ostream &output) const {
   output << nlohmann::json({{"operation", "addition"}, {"key", key}, {"data", data}});
   return output;
 }
@@ -18,7 +18,7 @@ void suppression_map_state_update::apply(nlohmann::json &state) {
   if (it != state.end()) { state.erase(it); };
 }
 
-std::ostream &suppression_map_state_update::serialize_to(std::ostream &output) {
+std::ostream &suppression_map_state_update::serialize_to(std::ostream &output) const {
   output << nlohmann::json({{"operation", "suppression"}, {"key", key}});
   return output;
 }

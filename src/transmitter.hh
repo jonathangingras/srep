@@ -7,7 +7,6 @@
 #include <boost/asio.hpp>
 #include <boost/asio/ssl/stream.hpp>
 #include <boost/asio/ssl/rfc2818_verification.hpp>
-#include "thread_pool.hh"
 
 namespace srep {
 
@@ -15,7 +14,6 @@ class https_transmitter {
   std::string remote_host_;
   unsigned short port_;
   std::string certificate_chain_file_;
-  thread_pool pool;
 
 public:
   https_transmitter(const std::string &remote_host,

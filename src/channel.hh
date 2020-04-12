@@ -2,6 +2,7 @@
 #define _SREP_CHANNEL_HH_
 
 #include <mutex>
+#include <atomic>
 #include <condition_variable>
 #include "insertion_queue.hh"
 
@@ -20,6 +21,7 @@ private:
   queue_type queue;
   std::mutex mutex;
   std::condition_variable condition_variable;
+  std::atomic<bool> preempted = false;
 
 public:
   inline size_t size() const;
@@ -31,6 +33,9 @@ public:
   value_type read();
   template <typename output_stream_type>
   void read_in(output_stream_type &output, size_t n = 1);
+
+  void preempt();
+  void read_preemptable(value_type &read);
 };
 
 }

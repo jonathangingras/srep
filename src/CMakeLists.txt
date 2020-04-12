@@ -7,6 +7,8 @@ set(HEADERS
   barrier_impl.hh
   channel.hh
   channel_impl.hh
+  distributor.hh
+  distributor_impl.hh
   http.hh
   http_impl.hh
   insertion_queue.hh

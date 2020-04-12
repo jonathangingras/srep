@@ -19,6 +19,18 @@ struct test_object {
     t.allocated = nullptr;
   }
 
+  inline test_object& operator = (test_object &&t) {
+    inside = t.inside;
+    count = t.count;
+    allocated = t.allocated;
+
+    t.inside = 0;
+    t.count = nullptr;
+    t.allocated = nullptr;
+
+    return *this;
+  }
+
   inline ~test_object() {
     if(count != nullptr) { ++(*count); }
     if(allocated != nullptr) { delete allocated; }

@@ -270,3 +270,71 @@ TEST(Channel, UnlockedTwoChannelsReaderInBulkIsConsistent) {
 
   EXPECT_EQ(n_threads * n_writes, rchannel.size());
 }
+
+TEST(Channel, CanBePreemptedWhenEmpty) {
+  srep::channel<test_object> channel;
+  std::vector<std::thread> threads;
+
+  test_object output(0);
+
+  threads.push_back(std::thread([&channel, &output] {
+                                  channel.read_preemptable(output);
+                                }));
+  threads.push_back(std::thread([&channel]{
+                                  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                                  channel.preempt();
+                                }));
+
+  for (auto &thread: threads) {
+    thread.join();
+  }
+
+  EXPECT_EQ(0, output.inside);
+}
+
+TEST(Channel, PreemptHasNoEffectWhenNonEmpty) {
+  srep::channel<test_object> channel;
+  std::vector<std::thread> threads;
+
+  test_object output(0);
+  channel.write(42);
+
+  threads.push_back(std::thread([&channel, &output] {
+                                  channel.read_preemptable(output);
+                                }));
+  threads.push_back(std::thread([&channel]{
+                                  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                                  channel.preempt();
+                                }));
+
+  for (auto &thread: threads) {
+    thread.join();
+  }
+
+  EXPECT_EQ(42, output.inside);
+}
+
+TEST(Channel, PreemptCanBeCalledEachTimeThereIsADeadLock) {
+  srep::channel<test_object> channel;
+  std::vector<std::thread> threads;
+
+  test_object output(0);
+
+  threads.push_back(std::thread([&channel, &output] {
+                                  for (size_t i = 0; i < 2; ++i) {
+                                    channel.read_preemptable(output);
+                                  }
+                                }));
+  threads.push_back(std::thread([&channel]{
+                                  for (size_t i = 0; i < 2; ++i) {
+                                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                                    channel.preempt();
+                                  }
+                                }));
+
+  for (auto &thread: threads) {
+    thread.join();
+  }
+
+  EXPECT_EQ(0, output.inside);
+}

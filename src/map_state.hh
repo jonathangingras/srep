@@ -16,7 +16,7 @@ public:
     key(_key), data(_data) {}
 
   void apply(nlohmann::json &state);
-  std::ostream &serialize_to(std::ostream &output);
+  std::ostream &serialize_to(std::ostream &output) const;
 };
 
 class suppression_map_state_update: public serializable_state_update<nlohmann::json, nlohmann::json> {
@@ -27,7 +27,7 @@ public:
     key(_key) {}
 
   void apply(nlohmann::json &state);
-  std::ostream &serialize_to(std::ostream &output);
+  std::ostream &serialize_to(std::ostream &output) const;
 };
 
 class jsonable_json_state_update_deserializer: public state_update_deserializer<nlohmann::json, nlohmann::json> {
@@ -37,7 +37,7 @@ public:
 };
 
 template <>
-struct state_update_deserialization_type_traits<nlohmann::json, nlohmann::json> {
+struct state_update_deserializer_type_traits<nlohmann::json, nlohmann::json> {
   typedef jsonable_json_state_update_deserializer deserializer_type;
 };
 

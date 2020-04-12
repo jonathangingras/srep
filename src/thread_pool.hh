@@ -20,6 +20,8 @@ public:
   thread_pool();
   ~thread_pool();
 
+  inline size_t size() const { return threads.size(); }
+
   template <typename function_type, typename ...Args>
   void push(function_type &&function, Args &&...args);
 };

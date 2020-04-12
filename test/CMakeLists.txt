@@ -27,6 +27,7 @@ add_test_executable(map_state_test map_state_test.cc)
 add_test_executable(serializable_state_test serializable_state_test.cc)
 add_test_executable(thread_pool_test thread_pool_test.cc)
 add_test_executable(http_test http_test.cc)
+add_test_executable(peer_distributor_test peer_distributor_test.cc)
 
 add_executable(network_server_test network_server_test.cc)
 add_executable(generate_random_bin generate_random_bin.cc)
@@ -52,3 +53,5 @@ add_test(network_client_long_test "sh"
   ${CMAKE_CURRENT_SOURCE_DIR}/network_client_test.sh
   ${CMAKE_CURRENT_BINARY_DIR}/network_server_test
   ${CMAKE_CURRENT_BINARY_DIR}/network_client_long_test)
+
+add_test_executable(remote_https_peer_test remote_https_peer_test.cc)

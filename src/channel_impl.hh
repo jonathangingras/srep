@@ -53,6 +53,23 @@ void basic_channel<queue_type>::read_in(output_stream_type &output, size_t n) {
   }
 }
 
+template <typename queue_type>
+void basic_channel<queue_type>::preempt() {
+  preempted = true;
+  condition_variable.notify_all();
+}
+
+template <typename queue_type>
+void basic_channel<queue_type>::read_preemptable(value_type &read) {
+  std::unique_lock<std::mutex> lock(mutex);
+  condition_variable.wait(lock, [&] { return queue.size() >= 1 || preempted; });
+  preempted = false;
+  if (queue.size() >= 1) {
+    read = std::move(queue.front());
+    queue.pop();
+  }
+}
+
 }
 
 #endif
