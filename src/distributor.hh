@@ -15,7 +15,7 @@ public:
     {}
 
   template <typename shared_type>
-  void share(const shared_type &shared);
+  void share(shared_type &&shared);
 };
 
 }

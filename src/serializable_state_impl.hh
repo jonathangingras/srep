@@ -20,6 +20,20 @@ struct state_update_deserializer_type_traits {
 template <typename state_type,
           typename serialization_format_type,
           typename char_type,
+          typename char_traits_type>
+constexpr std::basic_istream<char_type, char_traits_type>
+&deserialize_from(std::basic_istream<char_type, char_traits_type> &input,
+                  std::unique_ptr<serializable_state_update<
+                    state_type, serialization_format_type, char_type, char_traits_type> > &deserialized,
+                  state_update_deserializer<
+                    state_type, serialization_format_type, char_type, char_traits_type> &deserializer) {
+  deserialized = deserializer.deserialize_from(input);
+  return input;
+}
+
+template <typename state_type,
+          typename serialization_format_type,
+          typename char_type,
           typename char_traits_type,
           typename deserializer_type_traits,
           typename ...Args>
@@ -29,7 +43,8 @@ constexpr std::basic_istream<char_type, char_traits_type>
                     state_type, serialization_format_type, char_type, char_traits_type> > &deserialized,
                   Args &&...args) {
   static_assert(!std::is_same<std::nullptr_t, typename deserializer_type_traits::deserializer_type>(),
-                "the deserializer_type is not defined in any specialization of srep::state_update_deserialization_type_traits");
+                "the default deserializer_type is not defined in any specialization"
+                " of srep::state_update_deserialization_type_traits");
 
   typename deserializer_type_traits::deserializer_type deserializer(std::forward<Args>(args)...);
   deserialized = deserializer.deserialize_from(input);

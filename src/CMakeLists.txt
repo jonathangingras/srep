@@ -15,6 +15,7 @@ set(HEADERS
   insertion_queue_impl.hh
   io_exchange.hh
   io_exchange_impl.hh
+  jsonable_state_update.hh
   map_state.hh
   receiver.hh
   receiver_impl.hh
@@ -25,6 +26,7 @@ set(HEADERS
   thread_pool.hh
   thread_pool_impl.hh
   transmitter.hh
+  type_assertions.hh
   )
 
 set(SRC

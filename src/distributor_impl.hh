@@ -9,10 +9,10 @@ namespace srep {
 
 template <typename peer_container_type>
 template <typename shared_type>
-void peer_distributor<peer_container_type>::share(const shared_type &shared) {
+void peer_distributor<peer_container_type>::share(shared_type &&shared) {
   barrier barrier;
   for (auto &peer : peers_) {
-    barrier.push([&peer, &shared]() { peer.share(shared); });
+    barrier.push([&peer, &shared]() { peer.share(std::forward<shared_type>(shared)); });
   }
 }
 

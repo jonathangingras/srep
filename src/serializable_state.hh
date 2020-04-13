@@ -38,6 +38,17 @@ struct state_update_deserializer_type_traits;
 template <typename state_type,
           typename serialization_format_type,
           typename char_type,
+          typename char_traits_type>
+constexpr std::basic_istream<char_type, char_traits_type>
+&deserialize_from(std::basic_istream<char_type, char_traits_type> &input,
+                  std::unique_ptr<serializable_state_update<
+                  state_type, serialization_format_type, char_type, char_traits_type> > &deserialized,
+                  state_update_deserializer<
+                  state_type, serialization_format_type, char_type, char_traits_type> &deserializer);
+
+template <typename state_type,
+          typename serialization_format_type,
+          typename char_type,
           typename char_traits_type,
           typename deserializer_type_traits =
             state_update_deserializer_type_traits<state_type,
