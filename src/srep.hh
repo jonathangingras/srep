@@ -11,7 +11,6 @@
 #include "srep/map_state.hh"
 #include "srep/receiver.hh"
 #include "srep/serializable_state.hh"
-#include "srep/srep.hh"
 #include "srep/state.hh"
 #include "srep/thread_pool.hh"
 #include "srep/transmitter.hh"
